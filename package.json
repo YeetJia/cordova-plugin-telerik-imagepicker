@@ -1,6 +1,6 @@
 {
-  "name": "@spoonconsulting/cordova-plugin-telerik-imagepicker",
-  "version": "2.0.4",
+  "name": "cordova-plugin-telerik-imagepicker-yeetjia",
+  "version": "1.0.0",
   "cordova_name": "ImagePicker",
   "description": "This plugin allows selection of multiple images from the camera roll / gallery in a phonegap app",
   "license": "MIT",
@@ -13,10 +13,10 @@
   "author": "Telerik-Verified-Plugins & spoonconsulting",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/spoonconsulting/cordova-plugin-telerik-imagepicker.git"
+    "url": "git+https://github.com/YeetJia/cordova-plugin-telerik-imagepicker.git"
   },
   "cordova": {
-    "id": "@spoonconsulting/cordova-plugin-telerik-imagepicker",
+    "id": "cordova-plugin-telerik-imagepicker-yeetjia",
     "platforms": [
       "ios",
       "android",
@@ -24,8 +24,7 @@
     ]
   },
   "engines": {
-    "name": "cordova",
-    "version": ">=3.5.0"
+    "cordova": ">=3.5.0"
   },
-  "homepage": "https://github.com/spoonconsulting/cordova-plugin-telerik-imagepicker"
+  "homepage": "https://github.com/YeetJia/cordova-plugin-telerik-imagepicker"
 }
