@@ -49,7 +49,7 @@ public class ImagePicker extends CordovaPlugin {
     private static final String FILE_ACCESS_ERROR = "Cannot access file. (-1)";
 
     private CallbackContext callbackContext;
-    private int maxImageCount;
+    private Integer maxImageCount;
     private LinearLayout layout = null;
 
     public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
@@ -62,13 +62,15 @@ public class ImagePicker extends CordovaPlugin {
             return true;
         } else if (ACTION_GET_PICTURES.equals(action)) {
             final JSONObject params = args.getJSONObject(0);
-            this.maxImageCount = params.has("maximumImagesCount") ? params.getInt("maximumImagesCount") : 20;
+            this.maxImageCount = params.has("maximumImagesCount") ? params.getInt("maximumImagesCount") : null;
 
             Intent imagePickerIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             imagePickerIntent.setType("image/*");
             imagePickerIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             cordova.startActivityForResult(this, imagePickerIntent, SELECT_PICTURE);
-            this.showMaxLimitWarning();
+            if (this.maxImageCount != null) {
+                this.showMaxLimitWarning();
+            }
             return true;
         }
         return false;
@@ -81,7 +83,7 @@ public class ImagePicker extends CordovaPlugin {
                 cordova.getActivity().runOnUiThread(() -> {
                     showLoader();
                 });
-                
+
                 Uri uri;
                 String path;
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -105,8 +107,10 @@ public class ImagePicker extends CordovaPlugin {
                                     return;
                                 }
                                 fileURIs.add(path);
-                                if (i + 1 >= ImagePicker.this.maxImageCount) {
-                                    break;
+                                if (this.maxImageCount != null) {
+                                    if (i + 1 >= ImagePicker.this.maxImageCount) {
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -122,7 +126,7 @@ public class ImagePicker extends CordovaPlugin {
                 } else {
                     callbackContext.error("No images selected");
                 }
-                
+
                 cordova.getActivity().runOnUiThread(() -> {
                     hideLoader();
                 });
@@ -157,17 +161,17 @@ public class ImagePicker extends CordovaPlugin {
             ((ViewGroup) this.layout.getParent()).removeView(layout);
             this.layout = null;
             cordova.getActivity().getWindow()
-              .clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                .clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     }
 
     /**
-    * Choosing a picture launches another Activity, so we need to implement the
-    * save/restore APIs to handle the case where the CordovaActivity is killed by the OS
-    * before we get the launched Activity's result.
-    *
-    * @see http://cordova.apache.org/docs/en/dev/guide/platforms/android/plugin.html#launching-other-activities
-    */
+     * Choosing a picture launches another Activity, so we need to implement the
+     * save/restore APIs to handle the case where the CordovaActivity is killed by the OS
+     * before we get the launched Activity's result.
+     *
+     * @see http://cordova.apache.org/docs/en/dev/guide/platforms/android/plugin.html#launching-other-activities
+     */
     public void onRestoreStateForActivityResult(Bundle state, CallbackContext callbackContext) {
         this.callbackContext = callbackContext;
     }
@@ -186,8 +190,8 @@ public class ImagePicker extends CordovaPlugin {
     @SuppressLint("InlinedApi")
     private boolean hasReadPermission() {
         return Build.VERSION.SDK_INT < 23 ||
-          PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this.cordova.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) ||
-                PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this.cordova.getActivity(), Manifest.permission.READ_MEDIA_IMAGES);
+            PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this.cordova.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) ||
+            PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this.cordova.getActivity(), Manifest.permission.READ_MEDIA_IMAGES);
     }
 
     @SuppressLint("InlinedApi")
