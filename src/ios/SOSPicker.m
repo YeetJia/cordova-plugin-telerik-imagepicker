@@ -77,7 +77,7 @@ typedef enum : NSUInteger {
     GMImagePickerController *picker = [[GMImagePickerController alloc] init:allow_video];
     picker.delegate = self;
     picker.presentationController.delegate = self;
-    picker.maximumImagesCount = maximumImagesCount;
+    picker.maximumImagesCount = maximumImagesCount ?: 1000;
     picker.title = title;
     picker.customNavigationBarPrompt = message;
     picker.colsInPortrait = 4;
